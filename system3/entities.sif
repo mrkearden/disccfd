@@ -1,0 +1,86 @@
+!------ Skeleton for body section -----
+Body 1
+  Name = pad1
+End
+
+Body 2
+  Name = pad2
+End
+
+Body 3
+  Name = disc
+End
+
+Body 4
+  Name = air
+End
+
+!------ Skeleton for boundary section -----
+Boundary Condition 1
+  Name = pad1s
+End
+
+Boundary Condition 2
+  Name = Pad2fix
+End
+
+Boundary Condition 3
+  Name = Pad1fix
+End
+
+Boundary Condition 4
+  Name = pad2s
+End
+
+Boundary Condition 5
+  Name = hub
+End
+
+Boundary Condition 6
+  Name = s2
+End
+
+Boundary Condition 7
+  Name = s1
+End
+
+Boundary Condition 8
+  Name = discf2
+End
+
+Boundary Condition 9
+  Name = discf1
+End
+
+Boundary Condition 10
+  Name = outer
+End
+
+Boundary Condition 11
+  Name = inlet
+End
+
+Boundary Condition 12
+  Name = walls
+End
+
+Boundary Condition 13
+  Name = outlet
+End
+
+Boundary Condition 14
+  Name = airouter
+End
+
+Boundary Condition 15
+  Name = airs1
+End
+
+Boundary Condition 16
+  Name = airs2
+End
+
+Boundary Condition 17
+  Name = bnry21
+End
+

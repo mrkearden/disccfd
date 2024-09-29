@@ -1,0 +1,23 @@
+! ----- names for bodies -----
+$ pad1 = 1
+$ pad2 = 2
+$ disc = 3
+$ air = 4
+! ----- names for boundaries -----
+$ pad1s = 1
+$ Pad2fix = 2
+$ Pad1fix = 3
+$ pad2s = 4
+$ hub = 5
+$ s2 = 6
+$ s1 = 7
+$ discf2 = 8
+$ discf1 = 9
+$ outer = 10
+$ inlet = 11
+$ walls = 12
+$ outlet = 13
+$ airouter = 14
+$ airs1 = 15
+$ airs2 = 16
+$ bnry21 = 17
