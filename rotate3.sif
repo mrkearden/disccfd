@@ -1,0 +1,315 @@
+Header
+  CHECK KEYWORDS Warn
+  Mesh DB "." "system3"
+  Include Path ""
+  Results Directory "output3"
+End
+
+Simulation
+  Max Output Level = 5
+  Coordinate System = Cartesian
+  Coordinate Mapping(3) = 1 2 3
+  Simulation Type = Transient
+  Steady State Max Iterations = 5
+  Output Intervals(1) = 1
+  Timestep intervals(1) = 200
+  Timestep Sizes(1) = .6
+  Timestepping Method = BDF
+  BDF Order = 1
+  Solver Input File = case.sif
+  Post File = case2.vtu
+End
+
+Constants
+  Gravity(4) = 0 -1 0 9.82
+  Stefan Boltzmann = 5.670374419e-08
+  Permittivity of Vacuum = 8.85418781e-12
+  Permeability of Vacuum = 1.25663706e-6
+  Boltzmann Constant = 1.380649e-23
+  Unit Charge = 1.6021766e-19
+End
+
+Body 1
+  Target Bodies(1) = 3
+  Name = "Body 1"
+  Equation = 1
+  Material = 1
+  Initial condition = 1
+  Body Force = 1
+End
+
+Body 2
+  Target Bodies(1) = 1
+  Name = "Body 2"
+  Equation = 1
+  Material = 2
+  body force = 2
+  Initial condition = 1
+End
+
+Body 3
+  Target Bodies(1) = 2
+  Name = "Body 3"
+  Equation = 1
+  Material = 2
+    body force = 2
+  Initial condition = 1
+End
+
+Body 4
+  Target Bodies(1) = 4
+  Name = "Body 3"
+  Equation = 2
+  Material = 3
+  Initial condition = 1
+  end
+
+Solver 1
+! Solves the new mesh positions combining rigid mesh movement
+! and a computed relaxation field [0,1] computed from a Laplace equation.
+  Exec Solver = ALWAYS
+  Equation = MeshDeform
+  Procedure = "RigidMeshMapper" "RigidMeshMapper"
+  Cumulative Displacements = Logical True
+  Calculate Mesh Velocity = False
+  Variable = MeshRelax
+ Nonlinear System Convergence Tolerance = 1.0e-5
+  Nonlinear System Max Iterations = 20
+  Nonlinear System Newton After Iterations = 3
+  Nonlinear System Newton After Tolerance = 1.0e-3
+  Nonlinear System Relaxation Factor = 1
+  Linear System Solver = Iterative
+  Linear System Iterative Method = BiCGStabl
+  Linear System Max Iterations = 500
+  Linear System Convergence Tolerance = 1.0e-8
+  BiCGstabl polynomial degree = 4
+  Linear System Preconditioning = none
+  Linear System ILUT Tolerance = 1.0e-3
+  Linear System Abort Not Converged = False
+  Linear System Residual Output = 10
+  Linear System Precondition Recompute = 1
+  END
+  
+Solver 2
+  Equation = Heat Equation
+  Variable = Temperature
+  Procedure = "HeatSolve" "HeatSolver"
+  Exec Solver = Always
+  Stabilize = True
+  Optimize Bandwidth = True
+  Steady State Convergence Tolerance = 1.0e-5
+  Nonlinear System Convergence Tolerance = 1.0e-5
+  Nonlinear System Max Iterations = 20
+  Nonlinear System Newton After Iterations = 3
+  Nonlinear System Newton After Tolerance = 1.0e-3
+  Nonlinear System Relaxation Factor = 1
+  Linear System Solver = Iterative
+  Linear System Iterative Method = BiCGStabl
+  Linear System Max Iterations = 500
+  Linear System Convergence Tolerance = 1.0e-8
+  BiCGstabl polynomial degree = 4
+  Linear System Preconditioning = none
+  Linear System ILUT Tolerance = 1.0e-3
+  Linear System Abort Not Converged = False
+  Linear System Residual Output = 10
+  Linear System Precondition Recompute = 1
+  Apply Mortar BCs = Logical True
+End
+
+Solver 3
+  Equation = Navier-Stokes
+  Procedure = "FlowSolve" "FlowSolver"
+  Variable = Flow Solution[Velocity:3 Pressure:1]
+  Exec Solver = Always
+  Stabilize = True
+  Optimize Bandwidth = True
+  Steady State Convergence Tolerance = 1.0e-5
+  Nonlinear System Convergence Tolerance = 1.0e-5
+  Nonlinear System Max Iterations = 20
+  Nonlinear System Newton After Iterations = 3
+  Nonlinear System Newton After Tolerance = 1.0e-3
+  Nonlinear System Relaxation Factor = .5
+  Linear System Solver = Iterative
+  Linear System Iterative Method = BiCGStabl
+  Linear System Max Iterations = 1000
+  Linear System Convergence Tolerance = 1.0e-7
+  BiCGstabl polynomial degree = 6
+  Linear System Preconditioning = ILU0
+  Linear System ILUT Tolerance = 1.0e-3
+  Linear System Abort Not Converged = False
+  Linear System Residual Output = 10
+  Linear System Precondition Recompute = 1
+End
+
+Equation 1
+  Name = "Equation 1"
+  Active Solvers(2) = 1 2
+    Convection = Computed
+End
+
+Equation 2
+  Name = "Equation 2"
+  Active Solvers(2) = 2 3
+  Convection = Computed
+End
+
+Material 1
+  Name = "Aluminium (generic)"
+  Heat Conductivity = 237.0
+  Youngs modulus = 70.0e9
+  Sound speed = 5000.0
+  Heat Capacity = 897.0
+  Density = 2700.0
+  Poisson ratio = 0.35
+  Heat expansion Coefficient = 23.1e-6
+    Emissivity = 1
+End
+
+Material 2
+  Name = "brake pad"
+  Density = 2235.0
+  Heat expansion Coefficient = 3.5e-6
+  Heat Capacity = 710.0
+  Poisson ratio = 0.15
+  Youngs modulus = 65.0e9
+  Heat Conductivity = 75.0
+  Emissivity = 1
+End
+
+Material 3
+  Name = "Air (room temperature)"
+  Density = 1.205
+  Heat Conductivity = 0.0257
+  Relative Permittivity = 1.00059
+  Heat Capacity = 1005.0
+  Viscosity = 1.983e-5
+  Heat expansion Coefficient = 3.43e-3
+  Sound speed = 343.0
+End
+
+Initial Condition 1
+  Name = "InitialCondition 1"
+  Temperature = 20
+End
+
+Body Force 1
+Mesh Rotate 3 = Variable Time; Real MATC "75.24*tx(0)"
+End
+
+Body Force 2
+Heat Source = 9000
+End
+
+Boundary Condition 1
+  Target Boundaries(1) = 5 
+  Name = "hub"
+  Temperature = 20
+End
+
+Boundary Condition 2
+  Target Boundaries(1) = 1 
+  Name = "friction"
+  Mortar BC = 3
+  Plane Projector = Logical True
+ Galerkin Projector = Logical True
+ Mortar BC Coefficient Temperature = Real 350
+ Mortar BC Diag = Logical True
+  Moving Boundary = Logical True
+End
+
+Boundary Condition 3
+Target Boundaries(1) = 7
+  Moving Boundary = Logical True
+End
+
+Boundary Condition 4
+  Target Boundaries(1) = 4 
+  Name = "friction"
+  Mortar BC = 5
+  Plane Projector = Logical True
+ Galerkin Projector = Logical True
+ Mortar BC Coefficient Temperature = Real 350
+ Mortar BC Diag = Logical True
+  Moving Boundary = Logical True
+End
+
+Boundary Condition 5
+Target Boundaries(1) = 6
+  Moving Boundary = Logical True
+End
+
+Boundary Condition 6
+  Target Boundaries(1) = 11 
+  Name = "inlet"
+  Velocity 2 = 0
+  Temperature = 20
+  Velocity 3 = 0
+  Velocity 1 = .01
+End
+
+Boundary Condition 7
+  Target Boundaries(1) = 13
+  Name = "outlet"
+  Velocity 3 = 0
+  Velocity 2 = 0
+End
+
+Boundary Condition 8
+  Target Boundaries(1) = 12 
+  Name = "walls"
+  Noslip wall BC = True
+End
+
+Boundary Condition 9
+  Target Boundaries(1) = 14 
+  Name = "bc9"
+  Mortar BC = 10
+  Plane Projector = Logical True
+ Galerkin Projector = Logical True
+ Mortar BC Coefficient Temperature = Real 350
+ Mortar BC Diag = Logical True
+  Moving Boundary = Logical True
+    Noslip wall BC = True
+End
+
+Boundary Condition 10
+  Target Boundaries(1) = 10
+  Name = "bc10"
+  Noslip wall BC = True
+End
+
+Boundary Condition 11
+  Target Boundaries(1) = 16
+  Name = "bc11"
+  Mortar BC = 12
+  Plane Projector = Logical True
+ Galerkin Projector = Logical True
+ Mortar BC Coefficient Temperature = Real 350
+ Mortar BC Diag = Logical True
+  Moving Boundary = Logical True
+    Noslip wall BC = True
+End
+
+Boundary Condition 12
+  Target Boundaries(1) = 8
+  Name = "bc12"
+  Noslip wall BC = True
+End
+
+Boundary Condition 13
+  Target Boundaries(1) = 15
+  Name = "bc11"
+  Mortar BC = 14
+  Plane Projector = Logical True
+ Galerkin Projector = Logical True
+ Mortar BC Coefficient Temperature = Real 350
+ Mortar BC Diag = Logical True
+  Moving Boundary = Logical True
+    Noslip wall BC = True
+End
+
+Boundary Condition 14
+  Target Boundaries(1) = 9
+  Name = "bc12"
+  Noslip wall BC = True
+End
